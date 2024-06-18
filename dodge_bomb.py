@@ -10,6 +10,20 @@ KEY_DICT = {pg.K_UP:(0,-5),pg.K_DOWN:(0,5),
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
+def InOut(rct:pg.Rect) -> tuple[bool,bool]:
+    """"
+    引数:判定したいRect(今回の場合、こうかとんRect or 爆弾Rect)
+    戻り値:横、縦方向の真理値タプル(True:画面内 / False:画面外)
+    Rectオブジェクトleft,right,top,bottomの値から画面内、外を判断する
+    """
+    yoko, tate = True,True
+    if rct.left < 0 or WIDTH < rct.right:
+        yoko = False
+    if rct.top < 0 or HEIGHT < rct.bottom:
+        tate = False
+    return yoko,tate
+
+
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -38,8 +52,14 @@ def main():
                 sum_mv[0] += v[0]
                 sum_mv[1] += v[1]
         kk_rct.move_ip(sum_mv)
-        bb_rct.move_ip(vx,vy)
+        if InOut(kk_rct) != (True,True):
+            kk_rct.move_ip(-sum_mv[0],-sum_mv[1])
         screen.blit(kk_img, kk_rct)
+        bb_rct.move_ip(vx,vy)
+        if not InOut(bb_rct)[0]:
+            vx = vx * -1
+        if not InOut(bb_rct)[1]:
+            vy = vy * -1
         screen.blit(enn,bb_rct)
         pg.display.update()
         tmr += 1

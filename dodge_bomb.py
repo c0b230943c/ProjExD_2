@@ -5,7 +5,7 @@ import random
 
 
 WIDTH, HEIGHT = 1600, 900
-KEY_DICT = {pg.K_UP:(0,-5),pg.K_DOWN:(0,5),
+KEY_DICT = {pg.K_UP:(0,-5),pg.K_DOWN:(0,5),      # 各キーに応じた縦横の移動量の辞書。
             pg.K_LEFT:(-5,0),pg.K_RIGHT:(5,0),}
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
@@ -24,11 +24,24 @@ def InOut(rct:pg.Rect) -> tuple[bool,bool]:
     return yoko,tate
 
 
+def Rotate(image):
+    dict = {(-5,0):pg.transform.rotozoom(image,0,1.0),
+            (-5,5):pg.transform.rotozoom(image,45,1.0),
+            (0,5):pg.transform.flip(pg.transform.rotozoom(image,90,1.0),True,False),
+            (5,5):pg.transform.flip(pg.transform.rotozoom(image,45,1.0),True,False),
+            (5,0):pg.transform.flip(pg.transform.rotozoom(image,0,1.0),True,False),
+            (5,-5):pg.transform.flip(pg.transform.rotozoom(image,-45,1.0),True,False),
+            (0,-5):pg.transform.flip(pg.transform.rotozoom(image,-90,1.0),True,False),
+            (-5,-5):pg.transform.rotozoom(image,-45,1.0)}
+    return dict
+
+
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
     bg_img = pg.image.load("fig/pg_bg.jpg")    
     kk_img = pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 2.0)
+    kk_dict = Rotate(kk_img)
     kk_rct = kk_img.get_rect()
     kk_rct.center = 900, 400
     enn = pg.Surface((20,20))
@@ -56,7 +69,11 @@ def main():
         kk_rct.move_ip(sum_mv)
         if InOut(kk_rct) != (True,True):
             kk_rct.move_ip(-sum_mv[0],-sum_mv[1])
-        screen.blit(kk_img, kk_rct)
+        for k, v in kk_dict.items():
+            if k == tuple(sum_mv):
+                kk_img = v
+            else:
+                screen.blit(kk_img, kk_rct)
         bb_rct.move_ip(vx,vy)
         if not InOut(bb_rct)[0]:
             vx = vx * -1

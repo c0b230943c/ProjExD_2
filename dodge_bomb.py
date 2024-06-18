@@ -56,6 +56,29 @@ def Harder():
         bb_img.set_colorkey((0,0,0))
         bb_imgs.append(bb_img)
     return accs, bb_imgs
+    
+
+def GameOver(screen:pg.Surface):
+    """
+    引数:Surface(screen)
+    戻り値:なし
+    画面をブラックアウトさせ
+    泣いているこうかとんとGameOverの文字列を五秒間表示する
+    """
+    black = pg.Surface((WIDTH,HEIGHT))
+    pg.draw.rect(black,(0,0,0),(0,0,WIDTH,HEIGHT))
+    black.set_alpha(75)
+    screen.blit(black,[0,0])
+    cry_k = pg.image.load("fig/8.png")
+    screen.blit(cry_k,[600,HEIGHT//2])
+    screen.blit(cry_k,[1050,HEIGHT//2])
+    font = pg.font.Font(None,80)
+    txt = font.render("Game Over",True,(255,255,255))
+    screen.blit(txt,[700,HEIGHT//2])
+    pg.display.update()
+    time.sleep(5)
+    
+
 
 
 def main():
@@ -81,6 +104,7 @@ def main():
             if event.type == pg.QUIT: 
                 return
         if kk_rct.colliderect(bb_rct): #こうかとんと爆弾の衝突判定
+            GameOver(screen)
             return  # gameover
         screen.blit(bg_img, [0, 0]) 
 

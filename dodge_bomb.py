@@ -79,6 +79,22 @@ def GameOver(screen:pg.Surface):
     time.sleep(5)
     
 
+def Follow(kk_rct:pg.Rect,bb_rct:pg.Rect):
+    """
+    引数:こうかとんの座標,爆弾の座標
+    戻り値:爆弾の移動すべき方向のベクトル
+    こうかとんに向かって追従するように動くベクトルを返す
+    ただし、こうかとんとの距離が300未満であった場合、追従せず慣性方向に進むベクトルを返す
+    """
+    x_dif = kk_rct.center[0] - bb_rct.center[0]
+    y_dif = kk_rct.center[1] - bb_rct.center[1]
+    norm = x_dif**2 + y_dif**2
+    if norm < 300:
+        return bb_rct  # 未完成
+    else:
+        norm_x_dif = x_dif * 50 / norm
+        norm_y_dif = y_dif * 50 / norm
+    return norm_x_dif,norm_y_dif
 
 
 def main():

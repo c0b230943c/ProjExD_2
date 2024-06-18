@@ -139,7 +139,7 @@ def main():
             kk_rct.move_ip(-sum_mv[0],-sum_mv[1])
         for k, v in kk_dict.items():
             if k == tuple(sum_mv):
-                kk_img = v
+                kk_img = v  # sum_mvの値に応じて回転、反転させた画像をkk_imgに上書き
         screen.blit(kk_img, kk_rct)
         
         bb_rct.move_ip(avx,vy)
